@@ -57,6 +57,12 @@ wt = read_time_matrix(walk_times_file)
 s_odt <- read_timecube(schedule_dir)
 r_odt <- read_timecube(retro_dir)
 
+if( agency = 'JTA' ){
+	# remove two ODs (jta only)
+	s_odt <- s_odt[-c(19,210),-c(19,210),]
+	r_odt <- r_odt[-c(19,210),-c(19,210),]
+	wt    <-    wt[-c(19,210),-c(19,210)]
+}
 # ------------- Subset matrices to shared time ----------------
 
 # rename S by time rather than date since it only has one day
