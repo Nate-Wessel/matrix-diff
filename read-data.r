@@ -1,5 +1,5 @@
 # Produces:
-# agency - age
+# agency - agency acronym passed along to be sure we know what we're working with
 # od     - a spatialpolygons dataframe of the OD zones
 # wt     - a walking time matrix
 # s_odt  - scheduled travel times indexed by o,d,t
