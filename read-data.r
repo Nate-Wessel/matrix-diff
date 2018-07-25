@@ -13,7 +13,6 @@ if( agency == 'JTA' ){
 	retro_dir       = '/home/nate/dissdata/jv-retro'
 	walk_times_file = '/home/nate/Dropbox/diss/analysis/walk-times/jta.csv'
 }else if( agency == 'TTC' ){
-	agency           = 'TTC'
 	od_table        = 'ttc_od'
 	schedule_dir    = '/home/nate/dissdata/ttc-sched'
 	retro_dir       = '/home/nate/dissdata/ttc-retro'
