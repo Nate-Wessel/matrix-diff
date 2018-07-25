@@ -7,7 +7,10 @@ access <- function( times_odt, weights_o, weights_d, acc_func ){
 	# need to permute array in order to use vector recycling on weights
 	times_dot = aperm( times_odt, c(2,1,3) )
 	# d,o,t -> o,t by summing over destinations
-	acc_ot = apply( acc_func(times_dot) * weights_d, c(2,3), sum, na.rm=T ) / sum(weights_d)
+	acc_ot = apply( 
+		acc_func(times_dot) * weights_d, 
+		c(2,3), sum, na.rm=T 
+	) / sum(weights_d)
 	# o,t -> o by averaging over times (all times given same weight)
 	acc_o = apply( acc_ot, c(1), mean, na.rm=T )
 	# total summary measure with o weights (o weights get recycled)
@@ -59,5 +62,4 @@ for( weighting_scheme in dimnames(A_results)[[3]] ){
 	}
 }
 remove(func,func_name,weighting_scheme,w1,w2,w_names)
-remove(bin45,bin60,bin90,gauss30,gauss45,gauss60)
 
