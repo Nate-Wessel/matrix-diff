@@ -1,73 +1,87 @@
 source('read-data.r')
+source('access-functions.r')
 
-# ------------- clip to walking times -----------------------
-# or alternately set max of times to the walking time
+# clip travel times to walking times
 i = !is.na(c(wt)) & c(s_odt) > c(wt) | is.na(s_odt)
 s_odt[ i ] = c(wt)[i]
 i = !is.na(c(wt)) & c(r_odt) > c(wt) | is.na(r_odt)
 r_odt[ i ] = c(wt)[i]
 remove(i)
-# ----------- set trips over x hours to NA ------------------
+# set trips over 5 hours to NA
 s_odt[s_odt>5*3600] = NA
 r_odt[r_odt>5*3600] = NA
 
+
 # calculate various correlations between the two matrices
-cor_NA <- cor( is.na(s_odt), is.na(r_odt) )
-cor_time_no_NA <- cor( x=s_odt, y=r_odt, use='pairwise.complete.obs', method='pearson' )
+#cor_NA <- cor( is.na(s_odt), is.na(r_odt) )
+#cor_time_no_NA <- cor( x=s_odt, y=r_odt, use='pairwise.complete.obs', method='pearson' )
+
+
+figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
+
 
 # plot the correlation of the travel times (sampled)
-samp_i = sample(length(s_odt),10^4.27)
-plot_samp_n = sum(!is.na(s_odt[samp_i] + r_odt[samp_i]))
-plot(
-	x=s_odt[samp_i]/3600, xlab='Schedule',
-	y=r_odt[samp_i]/3600, ylab='Retro',
-	main='Travel time comparison, Schedule vs. Retro',
-	pch='+', bty='n',family='serif',
-	col=rgb(0,0,0,alpha=0.1),
-	xlim=c(0,5),ylim=c(0,5)
-)
-abline(0,1,col='red')
+pdf(paste0(figures_dir,agency,'-time-corr.pdf'),width=8,height=6)
+	samp_i = sample(length(s_odt),10^4.27)
+	plot_samp_n = sum(!is.na(s_odt[samp_i] + r_odt[samp_i]))
+	plot(
+		x=s_odt[samp_i]/3600, xlab='Schedule',
+		y=r_odt[samp_i]/3600, ylab='Retro',
+		main=paste(agency,'Travel times, Schedule vs. Retro'),
+		pch='+', bty='n',family='serif',
+		col=rgb(0,0,0,alpha=0.1),
+		xlim=c(0,5),ylim=c(0,5)
+	)
+	abline(0,1,col='red')
+dev.off()
 
-remove(samp_i)
-
-
-
-
-
-# plot A_ot schedule vs retro
-s_acc = access( s_odt, od@data[,'zones'], od@data[,'zones'], gauss )[[3]]
-r_acc = access( r_odt, od@data[,'zones'], od@data[,'zones'], gauss )[[3]]
-
-samp_i = sample(length(s_acc),10^4)
-plot(
-	x=s_acc[samp_i], xlab='Schedule',
-	y=r_acc[samp_i], ylab='Retro',
-	main='JTA A_ot, Schedule vs. Retro',
-	pch='+', bty='n',family='serif',
-	col=rgb(0,0,0,alpha=0.1),
-	xlim=c(0,.5),ylim=c(0,.5)
-)
-abline(0,1,col='red')
-
-remove(samp_i)
+# plot sample of A_ot schedule vs retro
+s_acc = access( s_odt, od$zones, od$zones, gauss30 )
+r_acc = access( r_odt, od$zones, od$zones, gauss30 )
+As_ot = s_acc[[3]]
+Ar_ot = r_acc[[3]]
+pdf(paste0(figures_dir,agency,'-A_ot-corr.pdf'),width=8,height=6)
+	samp_i = sample(length(As_ot),10^4)
+	plot(
+		x=As_ot[samp_i], xlab='A_ot Schedule',
+		y=Ar_ot[samp_i], ylab='A_ot Retro',
+		main=paste(agency,'A_ot, Schedule vs. Retro'),
+		pch='+', bty='n',family='serif',
+		col=rgb(0,0,0,alpha=0.1),
+		xlim=c(0,.5),ylim=c(0,.5)
+	)
+	abline(0,1,col='red')
+dev.off()
 
 
+# order of zone accessibility
+#so = sort(s_acc[[2]])
+#ro = sort(s_acc[[2]])
 
-
-
-
-# plot the change in A_o over time
-s_acc = access( s_odt, od@data[,'zones'], od@data[,'zones'], gauss )[[3]]
-r_acc = access( r_odt, od@data[,'zones'], od@data[,'zones'], gauss )[[3]]
-
-plot(
-	0, type='n', xlim=c(0,181), ylim=c(0,.5),
-	xlab='time', ylab='A_o', main='TTC A_o over t',
-	family='serif',bty='n'
-)
-for(o in 1:181){
-	lines(x=1:181,y=r_acc[o,],col=rgb(0,0,0,alpha=.2))
+# plot the change in selected A_ot over t
+# first select the o
+if(agency=='JTA'){ 
+	os = c( 126 ) 
+	ylim = c(0,.15)
+}else if(agency=='TTC'){ 
+	os = c( 19, 236, 116, 240 ) 
+	ylim = c(0,.5)
 }
+# subset A_ot to a one rush hour period
+sub_i = dimnames(Ar_ot)[[2]] >= "2017-11-10 16:00:00" & dimnames(Ar_ot)[[2]] <= "2017-11-10 19:00:00"
+fri_Ar_ot = Ar_ot[,sub_i]
+fri_As_ot = As_ot[,sub_i]
+pdf(paste0(figures_dir,agency,'-A_ot-over-t.pdf'),width=8,height=6)
+	plot(
+		0, type='n', xlim=c(0,181), ylim=ylim,
+		xlab='time', ylab='A_o', main=paste(agency,'A_o over t'),
+		family='serif',bty='n'
+	)
+	for(o in os){
+		lines(x=1:181,y=fri_Ar_ot[o,],col='red')
+		lines(x=1:181,y=fri_As_ot[o,],col='black')
+	}
+dev.off()
 
 
 
