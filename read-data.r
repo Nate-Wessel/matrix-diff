@@ -50,8 +50,9 @@ od <- get_postgis_query(con,paste('SELECT * FROM',od_table,'ORDER BY uid'),geom_
 # add zone counts (one per, obviously) for simple weighting later
 od$zones = 1
 
-# get the walking time matrix
+# get the walking time matrix as double, convert to integer
 wt = read_time_matrix(walk_times_file)
+wt = array(as.integer(wt),dim(wt))
 # read in the travel time data
 s_odt <- read_timecube(schedule_dir)
 r_odt <- read_timecube(retro_dir)
