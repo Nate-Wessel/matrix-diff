@@ -5,7 +5,7 @@
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
 
-agency = 'JTA'
+agency = 'TTC'
 
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
@@ -63,6 +63,17 @@ if( agency == 'JTA' ){
 	r_odt <- r_odt[-c(19,210),-c(19,210),]
 	wt    <-    wt[-c(19,210),-c(19,210)]
 }
+
+# clip travel times to walking times
+i = !is.na(c(wt)) & c(s_odt) > c(wt) | is.na(s_odt)
+s_odt[ i ] = c(wt)[i]
+i = !is.na(c(wt)) & c(r_odt) > c(wt) | is.na(r_odt)
+r_odt[ i ] = c(wt)[i]
+remove(i)
+# set trips over 5 hours to NA
+s_odt[s_odt>5*3600] = NA
+r_odt[r_odt>5*3600] = NA
+
 # ------------- Subset matrices to shared time ----------------
 
 # rename S by time rather than date since it only has one day
@@ -85,6 +96,3 @@ s_odt = s_odt[,,r_times]
 remove(schedule_dir,retro_dir,walk_times_file,od_table,con)
 remove(common_times,r_subset,r_times)
 remove(read_timecube, read_time_matrix)
-
-
-
