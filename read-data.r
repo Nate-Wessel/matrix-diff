@@ -5,7 +5,7 @@
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
 
-agency = 'TTC'
+agency = 'JTA'
 
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
@@ -67,8 +67,14 @@ if( agency == 'JTA' ){
 # clip travel times to walking times
 i = !is.na(c(wt)) & c(s_odt) > c(wt) | is.na(s_odt)
 s_odt[ i ] = c(wt)[i]
+#percent_s_walked = sum(i) / length(s_odt)
+#percent_s_na = sum(is.na(s_odt))/length(s_odt)
+
 i = !is.na(c(wt)) & c(r_odt) > c(wt) | is.na(r_odt)
 r_odt[ i ] = c(wt)[i]
+#percent_r_walked = sum(i) / length(r_odt)
+#percent_r_na = sum(is.na(r_odt))/length(r_odt)
+
 remove(i)
 # set trips over 5 hours to NA
 s_odt[s_odt>5*3600] = NA

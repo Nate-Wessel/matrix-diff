@@ -20,20 +20,9 @@ access <- function( times_odt, weights_o, weights_d, acc_func ){
 
 
 # --------- define access metric functions -------------- 
-# cumulative binary functions
-bin45 <- function(t){ return( t/60L <= 45L ) }
-bin60 <- function(t){ return( t/60L <= 60L ) }
-bin90 <- function(t){ return( t/60L <= 90L ) }
-# gaussian decay functions
-gauss30 <- function(t){ 
-	bandwidth = 30*60
-	return( exp(-(t**2 / (2*bandwidth**2))) ) 
-}
-gauss45 <- function(t){ 
-	bandwidth = 45*60
-	return( exp(-(t**2 / (2*bandwidth**2))) ) 
-}
-gauss60 <- function(t){ 
-	bandwidth = 60*60
-	return( exp(-(t**2 / (2*bandwidth**2))) ) 
-}
+# cumulative binary (45 mins)
+cum <- function(t){ return( t/60L <= 45L ) }
+# negative exponential (e^t/30 with t in mins) 
+negexp <- function(t){ return( exp(-t/(30*60)) ) }
+# gaussian (bw = 30 mins)
+gauss <- function(t){ bw = 30*60; return( exp(-(t**2 / ( 2 * bw**2 ) )) ) }

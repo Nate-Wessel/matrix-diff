@@ -10,11 +10,14 @@ figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 # plot the correlation of the travel times (sampled)
 pdf(paste0(figures_dir,agency,'-time-corr.pdf'),width=5.5,height=5.5)
 	par(mar=c(4.5,3,3,1))
-	samp_i = sample(length(s_odt),10^4.27)
+	# sample 15k non-null value pairs
+	s = sample(length(s_odt),10^5)
+	s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
+	s = s[1:15000]
 	plot_samp_n = sum(!is.na(s_odt[samp_i] + r_odt[samp_i]))
 	plot(
-		x=s_odt[samp_i]/3600, xlab='Schedule',
-		y=r_odt[samp_i]/3600, ylab='',
+		x=s_odt[s]/3600, xlab='Schedule',
+		y=r_odt[s]/3600, ylab='',
 		main=paste(agency,'Travel times'),
 		pch='+', bty='n',family='serif', asp=1, xaxt="n", yaxt="n",
 		col=rgb(0,0,0,alpha=0.1),
@@ -58,7 +61,7 @@ pdf(paste0(figures_dir,agency,'-A_o-corr.pdf'),width=5.5,height=5.5)
 	plot(
 		x=As_o, xlab='Schedule',
 		y=Ar_o, ylab='',
-		main=paste(agency,'A_o, Schedule vs. Retro'),
+		main=paste(agency,'A_o'),
 		pch='+', bty='n',family='serif', asp=1, xaxt="n", yaxt="n",
 		col=rgb(0,0,0,alpha=0.4)
 	)
