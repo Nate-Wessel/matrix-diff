@@ -1,5 +1,6 @@
 source('~/matrix-diff/read-data.r')
 source('~/matrix-diff/access-functions.r')
+source('~/matrix-diff/all-access.r')
 
 figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 
@@ -9,17 +10,16 @@ figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 
 # plot the correlation of the travel times (sampled)
 pdf(paste0(figures_dir,agency,'-time-corr.pdf'),width=5.5,height=5.5)
-	par(mar=c(4.5,3,3,1))
+	par(mar=c(4.5,3,3,1),pch='+',family='serif')
 	# sample 15k non-null value pairs
 	s = sample(length(s_odt),10^5)
 	s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
 	s = s[1:15000]
-	plot_samp_n = sum(!is.na(s_odt[samp_i] + r_odt[samp_i]))
 	plot(
 		x=s_odt[s]/3600, xlab='Schedule',
 		y=r_odt[s]/3600, ylab='',
 		main=paste(agency,'Travel times'),
-		pch='+', bty='n',family='serif', asp=1, xaxt="n", yaxt="n",
+		bty='n', asp=1, xaxt="n", yaxt="n",
 		col=rgb(0,0,0,alpha=0.1),
 		xlim=c(0,5),ylim=c(0,5)
 	)
@@ -28,19 +28,18 @@ pdf(paste0(figures_dir,agency,'-time-corr.pdf'),width=5.5,height=5.5)
 	axis( 1, at=c(0:5), labels=paste(0:5,'h'), las=0, pos=-.2 )
 	abline(h=0:5,v=0:5,col=rgb(0,0,0,alpha=0.05))
 	title(ylab="Retro", line=1.3)
+	# plot the means and medians as colored crosshairs 
+	points(x=median(s_odt[s])/3600,y=median(r_odt[s])/3600,col='red',cex=1.5)
+	points(x=mean(s_odt[s])/3600,y=mean(r_odt[s])/3600,col='blue',cex=1.5)
 dev.off()
 
 # plot sample of A_ot schedule vs retro
-s_acc = access( s_odt, od$zones, od$zones, gauss30 )
-r_acc = access( r_odt, od$zones, od$zones, gauss30 )
-As_ot = s_acc[[3]]
-Ar_ot = r_acc[[3]]
 pdf(paste0(figures_dir,agency,'-A_ot-corr.pdf'),width=5.5,height=5.5)
 	par(mar=c(4.5,3,3,1))
 	samp_i = sample(length(As_ot),10^4)
 	plot(
-		x=As_ot[samp_i], xlab='Schedule',
-		y=Ar_ot[samp_i], ylab='',
+		x=A[['sched','gauss','A_ot']][samp_i], xlab='Schedule',
+		y=A[['retro','gauss','A_ot']][samp_i], ylab='',
 		main=paste(agency,'A_ot'),
 		pch='+', bty='n',family='serif', asp=1, xaxt="n", yaxt="n",
 		col=rgb(0,0,0,alpha=0.1),
