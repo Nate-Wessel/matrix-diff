@@ -1,8 +1,8 @@
-source('access-functions.r')
+source('~/matrix-diff/access-functions.r')
 
 A = array(list(NA),c(2,3,3))
-dimnames(A)[[1]] = c('retro','sched')
-dimnames(A)[[2]] = c('cum','gauss','negexp') # function names
+dimnames(A)[[1]] = c('sched','retro')
+dimnames(A)[[2]] = c('cum','negexp','gauss') # function names
 dimnames(A)[[3]] = c('A','A_o','A_ot') # aggregations
 
 # set the weights
@@ -23,6 +23,5 @@ for( func_name in dimnames(A)[[2]] ){
 	A[['retro',func_name,'A_ot']] = r_acc[[3]]
 	A[['sched',func_name,'A_ot']] = s_acc[[3]]
 }
-
-remove(func,func_name,weighting_scheme,w1,w2,w_names)
+remove(func,func_name,w1,w2,s_acc,r_acc)
 

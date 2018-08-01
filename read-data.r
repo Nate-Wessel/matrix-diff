@@ -5,7 +5,7 @@
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
 
-agency = 'JTA'
+agency = 'TTC'
 
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
