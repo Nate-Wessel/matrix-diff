@@ -5,7 +5,7 @@
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
 
-agency = 'TTC'
+agency = 'MBTA'
 
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
@@ -17,6 +17,11 @@ if( agency == 'JTA' ){
 	schedule_dir    = '/home/nate/dissdata/ttc-sched'
 	retro_dir       = '/home/nate/dissdata/ttc-retro'
 	walk_times_file = '/home/nate/Dropbox/diss/analysis/walk-times/ttc.csv'
+}else if( agency == 'MBTA' ){
+	od_table        = 'mbta_od'
+	schedule_dir    = '/home/nate/dissdata/mbta-sched'
+	retro_dir       = '/home/nate/Dropbox/mbta-retro'
+	walk_times_file = '/home/nate/Dropbox/diss/analysis/walk-times/mbta.csv'
 }
 
 # read one of the matrix files output by the OTP script

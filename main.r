@@ -34,24 +34,6 @@ pdf(paste0(figures_dir,agency,'-time.pdf'),width=5.5,height=5.5)
 	points(x=mean(s_odt[s])/3600,y=mean(r_odt[s])/3600,col='blue',cex=1.5)
 dev.off()
 
-
-# plot the access functions
-pdf(paste0(figures_dir,'A-funcs.pdf'),width=5,height=3)
-	par(mar=c(4,2,3,1),family='serif')
-	plot( 
-		0, type='n', ylim=c(0,1), xlim=c(0,120), bty='n', xaxt="n", yaxt="n",
-		main='Accessibility Functions',xlab=NA, ylab=NA
-	)
-	x = 0:(120*60)
-	lines(x=x/60,y=gauss(x),col='red')
-	lines(x=x/60,y=cum(x),col='darkgreen')
-	lines(x=x/60,y=negexp(x),col='blue')
-	axis( 2, at=c(0,1), labels=c(0,1), las=2, pos=-5 ) # left
-	axis( 1, at=c(0,30,60,90,120), labels=c('0','30 minutes','1 hour','1.5 hours','2 hours'), las=0, pos=-.1 ) # bottom
-	text(x=c(32,60,15),y=c(.8,.6,.3),labels=c('Gaussian','Cumulative','Negative\nExponential'),col=c('red','darkgreen','blue'))
-dev.off()
-
-
 # plot sample of A_ot schedule vs retro
 pdf(paste0(figures_dir,agency,'-A_ot.pdf'),width=5.5,height=5.5)
 	par(mar=c(4.5,3,3,1))
@@ -126,6 +108,23 @@ pdf(paste0(figures_dir,agency,'-A_ot-over-t.pdf'),width=8,height=4)
 	axis( 1, at=c(0,60,120,180), labels=c('4pm','5pm','6pm','7pm'), las=0, pos=-.02 ) # X
 dev.off()
 
+
+
+# plot the access functions
+#pdf(paste0(figures_dir,'A-funcs.pdf'),width=5,height=3)
+#	par(mar=c(4,2,3,1),family='serif')
+#	plot( 
+#		0, type='n', ylim=c(0,1), xlim=c(0,120), bty='n', xaxt="n", yaxt="n",
+#		main='Accessibility Functions',xlab=NA, ylab=NA
+#	)
+#	x = 0:(120*60)
+#	lines(x=x/60,y=gauss(x),col='red')
+#	lines(x=x/60,y=cum(x),col='darkgreen')
+#	lines(x=x/60,y=negexp(x),col='blue')
+#	axis( 2, at=c(0,1), labels=c(0,1), las=2, pos=-5 ) # left
+#	axis( 1, at=c(0,30,60,90,120), labels=c('0','30 minutes','1 hour','1.5 hours','2 hours'), las=0, pos=-.1 ) # bottom
+#	text(x=c(32,60,15),y=c(.8,.6,.3),labels=c('Gaussian','Cumulative','Negative\nExponential'),col=c('red','darkgreen','blue'))
+#dev.off()
 
 
 
