@@ -11,7 +11,7 @@ cor_time_no_NA <- cor( x=s_odt, y=r_odt, use='pairwise.complete.obs', method='pe
 
 # plot the travel times (sampled)
 pdf(paste0(figures_dir,agency,'-time.pdf'),width=5.5,height=5.5)
-	par(mar=c(4.5,3,3,1),pch='+',family='serif')
+	par( mai=c(0.7,0.7,0.4,0.42), pch='+', family='serif' )
 	# sample 15k non-null value pairs
 	s = sample(length(s_odt),10^5)
 	s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
@@ -19,7 +19,7 @@ pdf(paste0(figures_dir,agency,'-time.pdf'),width=5.5,height=5.5)
 	# limit the plot range to the 98th percentile
 	plot_limit = quantile(c(s_odt[s],r_odt[s]),0.99)/3600 
 	plot(
-		x=s_odt[s]/3600, xlab='Schedule',
+		x=s_odt[s]/3600, xlab='',
 		y=r_odt[s]/3600, ylab='',
 		main=paste(agency,'Travel times'),
 		bty='n', asp=1, xaxt="n", yaxt="n",
@@ -27,54 +27,58 @@ pdf(paste0(figures_dir,agency,'-time.pdf'),width=5.5,height=5.5)
 		xlim=c(0,plot_limit),ylim=c(0,plot_limit)
 	)
 	abline(0,1,col='red')
-	axis( 2, at=c(0:5), labels=paste(0:5,'h'), las=2 )
-	axis( 1, at=c(0:5), labels=paste(0:5,'h'), las=0 )
+	axis( 2, at=c(0:5), labels=paste(0:5,'h'), las=2, pos=-plot_limit/30 )
+	axis( 1, at=c(0:5), labels=paste(0:5,'h'), las=0, pos=-plot_limit/30 )
 	abline(h=0:5,v=0:5,col=rgb(0,0,0,alpha=0.05))
-	title(ylab="Retro", line=1.3)
-	# plot the means and medians as colored crosshairs 
-	points(x=median(s_odt[s])/3600,y=median(r_odt[s])/3600,col='red',cex=1.5)
-	points(x=mean(s_odt[s])/3600,y=mean(r_odt[s])/3600,col='blue',cex=1.5)
+	title(ylab="Retro", line=2)
+	title(xlab="Schedule", line=2)
 dev.off()
 
 # plot A_ot schedule vs retro (sampled)
+#cor(c(A[['sched','gauss','A_ot']]),c(A[['retro','gauss','A_ot']]))
 pdf(paste0(figures_dir,agency,'-A_ot.pdf'),width=5.5,height=5.5)
-	par(mar=c(4.5,3,3,1))
+	par(mai=c(0.7,0.7,0.4,0.42), family='serif') # bottom left top right
 	samp_i = sample(length(A[['sched','gauss','A_ot']]),10^4)
 	plot_limit = quantile( # limit plot to 99th percentile
 		c(A[['sched','gauss','A_ot']][samp_i],A[['retro','gauss','A_ot']][samp_i]
-	),0.99)
+	),0.999)
 	plot(
-		x=A[['sched','gauss','A_ot']][samp_i], xlab='Schedule',
+		x=A[['sched','gauss','A_ot']][samp_i], xlab='',
 		y=A[['retro','gauss','A_ot']][samp_i], ylab='',
-		main=paste(agency,'A_ot'), pch='+', bty='n',family='serif', 
+		main=paste(agency,'A_ot'), pch='+', bty='n', 
 		asp=1, xaxt="n", yaxt="n", col=rgb(0,0,0,alpha=0.1),
-		xlim=c(0,plot_limit+0.1),ylim=c(0,plot_limit)
+		xlim=c(0,plot_limit),ylim=c(0,plot_limit)
 	)
 	abline(0,1,col='red')
 	labs = seq(0,1,by=.1)
-	axis( 2, at=labs, labels=labs, las=2, pos=-.02 )
-	axis( 1, at=labs, labels=labs, las=0, pos=-.02 )
+	axis( 2, at=labs, labels=labs, las=2, pos=-plot_limit/30 )
+	axis( 1, at=labs, labels=labs, las=0, pos=-plot_limit/30 )
 	abline(h=labs,v=labs,col=rgb(0,0,0,alpha=0.05))
 	title(ylab="Retro", line=2)
+	title(xlab="Schedule", line=2)
 dev.off()
 
 # plot A_o schedule vs retro
 pdf(paste0(figures_dir,agency,'-A_o.pdf'),width=5.5,height=5.5)
+	par( mai=c(0.7,0.7,0.4,0.42), pch='+', family='serif' )
+	# plot all points
+	plot_limit = max(c(A[['sched','gauss','A_o']],A[['retro','gauss','A_o']]))
 	plot(
-		x=A[['sched','gauss','A_o']], xlab='Schedule',
+		x=A[['sched','gauss','A_o']], xlab='',
 		y=A[['retro','gauss','A_o']], ylab='',
 		main=paste(agency,'A_o'),
-		pch='+', bty='n',family='serif', asp=1, xaxt="n", yaxt="n",
+		pch='+', bty='n', asp=1, xaxt="n", yaxt="n",
 		col=rgb(0,0,0,alpha=0.4)
 	)
 	Ao_lm = lm( A[['retro','gauss','A_o']] ~ A[['sched','gauss','A_o']] )
-	abline(Ao_lm,col='blue')
-	abline(0,1,col='red')
+	abline(Ao_lm,col='blue') # regression line
+	abline(0,1,col='red') # identity line
 	labs = seq(0,1,by=.1)
-	axis( 2, at=labs, labels=labs, las=2, pos=-.01 )
-	axis( 1, at=labs, labels=labs, las=0, pos=-.01 )
+	axis( 2, at=labs, labels=labs, las=2, pos=-plot_limit/30 )
+	axis( 1, at=labs, labels=labs, las=0, pos=-plot_limit/30 )
 	abline(h=labs,v=labs,col=rgb(0,0,0,alpha=0.05))
-	title(ylab="Retro", line=2.5)
+	title(ylab="Retro", line=2)
+	title(xlab="Schedule", line=2)
 dev.off()
 
 
