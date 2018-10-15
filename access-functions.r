@@ -1,5 +1,5 @@
 # calculate accessibility given weights, a function, and a travel times matrix
-access <- function( times_odt, weights_o, weights_d, acc_func ){
+access <- function( times_odt, acc_func ){
 	# assert that things are the right size
 	stopifnot( dim(times_odt)[1] == length(weights_d) )
 	stopifnot( dim(times_odt)[1] == dim(times_odt)[2] )
