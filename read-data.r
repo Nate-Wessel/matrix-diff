@@ -5,8 +5,6 @@
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
 
-agency = 'TTC'
-
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
 	schedule_dir    = '/home/nate/dissdata/jv-all-stops'
@@ -75,7 +73,7 @@ if( agency == 'JTA' ){
 	wt    <-    wt[-bad_od,-bad_od]
 	# already removed from db table
 	remove(bad_od)
-}else if( agency == 'MUNI' ){
+}else if( agency == 'Muni' ){
 	bad_od = c(5,127)
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
@@ -90,21 +88,15 @@ if( agency == 'JTA' ){
 	od <- od[!od$uid %in% bad_od,]
 	remove(bad_od)
 }
-if(FALSE){
-	# clip travel times to walking times
-	i = !is.na(c(wt)) & c(s_odt) > c(wt) | is.na(s_odt)
-	s_odt[ i ] = c(wt)[i]
-	#percent_s_walked = sum(i) / length(s_odt)
-	#percent_s_na = sum(is.na(s_odt))/length(s_odt)	
-	i = !is.na(c(wt)) & c(r_odt) > c(wt) | is.na(r_odt)
-	r_odt[ i ] = c(wt)[i]
-	#percent_r_walked = sum(i) / length(r_odt)
-	#percent_r_na = sum(is.na(r_odt))/length(r_odt)
-	remove(i)
-	# set trips over 5 hours to NA
-	s_odt[s_odt>5*3600] = NA
-	r_odt[r_odt>5*3600] = NA
-}
+
+# clip travel times to walking times
+i = !is.na(c(wt)) & c(s_odt) > c(wt) | is.na(s_odt)
+s_odt[ i ] = c(wt)[i]
+i = !is.na(c(wt)) & c(r_odt) > c(wt) | is.na(r_odt)
+r_odt[ i ] = c(wt)[i]
+remove(i)
+
+	
 # ------------- Subset matrices to shared time ----------------
 
 # rename S by time rather than date since it only has one day

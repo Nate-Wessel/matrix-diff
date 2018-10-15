@@ -1,72 +1,62 @@
+agency = 'TTC'
+
 source('~/matrix-diff/read-data.r')
 source('~/matrix-diff/access-functions.r')
 source('~/matrix-diff/all-access.r')
 
 figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 
-# calculate various correlations between the two matrices
-cor_NA <- cor( is.na(s_odt), is.na(r_odt) )
-cor_time_no_NA <- cor( x=s_odt, y=r_odt, use='pairwise.complete.obs', method='pearson' )
-
+# sample 15k non-null value pairs
+s = sample(length(s_odt),10^5)
+s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
+s = s[1:15000]
+# limit the plot range to the 99.5th quantile of travel time
+xlim = c(0,4) 
+qs = quantile( c(r_odt[s]/s_odt[s]), c(.01,.05,.25,.5,.75,.95,.99), na.rm=T )
 
 # plot the travel times (sampled)
 pdf(paste0(figures_dir,agency,'-time.pdf'),width=5.5,height=5.5)
 	par( mai=c(0.7,0.7,0.4,0.42), pch='+', family='serif' )
-	# sample 15k non-null value pairs
-	s = sample(length(s_odt),10^5)
-	s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
-	s = s[1:15000]
-	# limit the plot range to the 99.9th percentile
-	plot_limit = quantile(c(s_odt[s],r_odt[s]),0.995)/3600 
 	plot(
 		x=s_odt[s]/3600, xlab='',
 		y=r_odt[s]/3600, ylab='',
 		main=paste(agency,'Travel times'),
 		bty='n', asp=1, xaxt="n", yaxt="n",
 		col=rgb(0,0,0,alpha=0.1),
-		xlim=c(0,plot_limit),ylim=c(0,plot_limit)
+		xlim=xlim,ylim=xlim
 	)
 	abline(0,1,col='red')
-	axis( 2, at=c(0:5), labels=paste(0:5,'h'), las=2, pos=-plot_limit/30 )
-	axis( 1, at=c(0:5), labels=paste(0:5,'h'), las=0, pos=-plot_limit/30 )
+	axis( 2, at=c(0:5), labels=paste(0:5,'h'), las=2, pos=-xlim[2]/30 )
+	axis( 1, at=c(0:5), labels=paste(0:5,'h'), las=0, pos=-xlim[2]/30 )
 	abline(h=0:5,v=0:5,col=rgb(0,0,0,alpha=0.05))
 	title(ylab="Retro", line=2)
 	title(xlab="Schedule", line=2)
 dev.off()
 
 
-# plot the travel times against error (sampled)
-# sample 15k non-null value pairs
-s = sample(length(s_odt),10^5)
-s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
-s = s[1:15000]
-# limit the plot range to the 99.5th percentile of travel time
-xlim = c(0, quantile(c(s_odt[s],r_odt[s]),0.995)/3600 ) 
-qs = quantile( c(s_odt[s]/r_odt[s]), c(.01,.05,.25,.5,.75,.95,.99), na.rm=T )
-
+# plot the schedule travel times against error (sampled)
+# why should this be logged?
 pdf(paste0(figures_dir,agency,'-time2.pdf'),width=5.5,height=5.5)
 	# set up the empty plot
 	par( mai=c(0.8,0.7,0.4,0.42), pch='+', family='serif' ) # bottom, left, top, right
 	plot(0,type='n', main=paste(agency,'Scheduled Travel Times vs % Error'),
 		bty='n', xaxt="n", yaxt="n", xlab='', ylab='',
-		xlim=xlim, ylim=c(0,2) )
+		xlim=xlim, ylim=c(-1,1) )
 	# add the axes
-	axis( 1, at=c(0:5), labels=paste(0:5,'h'), las=0, pos=-.1 ) # hours
-	axis( 2, at=qs, labels=paste0(round(qs*100,1),'%'), las=2, pos=-plot_limit/30 )
+	axis( 1, at=c(0:5), labels=paste(0:5,'h'), las=0, pos=-1.1 ) # hours
+	axis( 2, at=log(qs), labels=paste0(round(qs*100,1),'%'), las=2, pos=-xlim[2]/30 )
 	#title(ylab="% diff from schedule", line=2)
-	title(xlab="Scheduled travel time", line=2)
-	abline(h=qs,v=0:5,col=rgb(0,0,0,alpha=0.05)) # grey grid
+	title(xlab="Schedule travel time", line=2.5)
+	abline(h=log(qs),v=0:5,col=rgb(0,0,0,alpha=0.05)) # grey grid
+	abline(h=log(qs[4]),col='red') # red median line
 	points(
-		x= s_odt[s] / 3600,
-		y= s_odt[s] / r_odt[s], 
+		x= s_odt[s] / 3600, # scheduled time in hours
+		y= log(r_odt[s]/s_odt[s]), # 
 		col=rgb(0,0,0,alpha=0.1) )
-	abline(h=1,col='red') # red 0 line
-	abline(h=mean(s_odt[s] / r_odt[s],na.rm=T),col='blue') # blue median line
 dev.off()
 
 
 # plot A_ot schedule vs retro (sampled)
-#cor(c(A[['sched','gauss','A_ot']]),c(A[['retro','gauss','A_ot']]))
 pdf(paste0(figures_dir,agency,'-A_ot.pdf'),width=5.5,height=5.5)
 	par(mai=c(0.7,0.7,0.4,0.42), family='serif') # bottom left top right
 	samp_i = sample(length(A[['sched','gauss','A_ot']]),10^4)
@@ -82,8 +72,8 @@ pdf(paste0(figures_dir,agency,'-A_ot.pdf'),width=5.5,height=5.5)
 	)
 	abline(0,1,col='red')
 	labs = seq(0,1,by=.1)
-	axis( 2, at=labs, labels=labs, las=2, pos=-plot_limit/30 )
-	axis( 1, at=labs, labels=labs, las=0, pos=-plot_limit/30 )
+	axis( 2, at=labs, labels=labs, las=2, pos=-xlim[2]/30 )
+	axis( 1, at=labs, labels=labs, las=0, pos=-xlim[2]/30 )
 	abline(h=labs,v=labs,col=rgb(0,0,0,alpha=0.05))
 	title(ylab="Retro", line=2)
 	title(xlab="Schedule", line=2)

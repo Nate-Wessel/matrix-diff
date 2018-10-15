@@ -1,8 +1,8 @@
 source('~/matrix-diff/access-functions.r')
 
-A = array(list(NA),c(2,3,3))
+A = array(list(NA),c(2,2,3))
 dimnames(A)[[1]] = c('sched','retro')
-dimnames(A)[[2]] = c('cum','negexp','gauss') # function names
+dimnames(A)[[2]] = c('cum','negexp') # function names
 dimnames(A)[[3]] = c('A','A_o','A_ot') # aggregations
 
 # set the weights
@@ -13,8 +13,8 @@ for( func_name in dimnames(A)[[2]] ){
 	print( func_name )
 	func = get(func_name)
 	# do the accessibility calculations
-	s_acc = access( s_odt, od@data[,w1], od@data[,w2], func )
-	r_acc = access( r_odt, od@data[,w1], od@data[,w2], func )
+	s_acc = access( s_odt, func )
+	r_acc = access( r_odt, func )
 	# pull out the measures and put them in the result matrix
 	A[['retro',func_name,'A']] =  r_acc[[1]]
 	A[['sched',func_name,'A']] =  s_acc[[1]]
