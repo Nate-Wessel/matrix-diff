@@ -55,8 +55,7 @@ library('RPostgreSQL')
 library('postGIStools')
 con <- dbConnect( PostgreSQL(), dbname='diss', user='nate', host='localhost', password='mink')
 od <- get_postgis_query(con,paste('SELECT * FROM',od_table,'ORDER BY uid'),geom_name='voronoi_geom')
-# add zone counts (one per, obviously) for simple weighting later
-od$zones = 1
+dbDisconnect(con)
 
 # get the walking time matrix as double, convert to integer
 wt = read_time_matrix(walk_times_file)
