@@ -1,8 +1,18 @@
-agency = 'TTC'
-
 source('~/matrix-diff/read-data.r')
-#source('~/matrix-diff/access-functions.r')
-#source('~/matrix-diff/all-access.r')
+source('~/matrix-diff/access-functions.r')
+source('~/matrix-diff/all-access.r')
+
+agency = 'TTC'
+load(paste0(agency,'.RData'))
+# loads: 
+#	agency	: 
+#	od			: 
+#	wt			: 
+#	s_odt		: 
+#	r_odt		: 
+#	A			: 
+
+save(agency,od,wt,s_odt,r_odt,A,file=paste0(agency,'.RData'))
 
 library('tidyverse')
 
@@ -11,7 +21,7 @@ figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 #
 # PLOT THE T_odt FIGURES
 #
-# sample 15k non-null value pairs
+# sample 10k non-null value pairs
 s = sample(length(s_odt),10^5)
 s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
 s = s[1:10000]
@@ -54,6 +64,7 @@ dev.off()
 # clean up after all that
 remove(ps,qs,s,xlim,diff_quants)
 
+
 # plot A_ot schedule vs retro (sampled)
 pdf(paste0(figures_dir,agency,'-A_ot.pdf'),width=5.5,height=5.5)
 	par(mai=c(0.7,0.7,0.4,0.42), family='serif') # bottom left top right
@@ -77,27 +88,27 @@ pdf(paste0(figures_dir,agency,'-A_ot.pdf'),width=5.5,height=5.5)
 	title(xlab="Schedule", line=2)
 dev.off()
 
+
 # plot A_o schedule vs retro
-pdf(paste0(figures_dir,agency,'-A_o.pdf'),width=5.5,height=5.5)
-	par( mai=c(0.7,0.7,0.4,0.42), pch='+', family='serif' )
+pdf(paste0(figures_dir,agency,'-A_o2.pdf'),width=5.5,height=5.5) 
+	par( mai=c(0.7,1,0.4,0.42), pch='+', family='serif' ) # bottom, left, top, right
+	xlim = switch(agency, 'Muni'=c(.1,.4), 'MBTA'=c(0,.2), 'TTC'=c(0,.2), 'JTA'=c(0,.2) ) 
 	# plot all points
-	plot_limit = max(c(A[['sched','gauss','A_o']],A[['retro','gauss','A_o']]))
 	plot(
-		x=A[['sched','gauss','A_o']], xlab='',
-		y=A[['retro','gauss','A_o']], ylab='',
-		main=paste(agency,'A_o'),
-		pch='+', bty='n', asp=1, xaxt="n", yaxt="n",xlim=c(0,plot_limit),ylim=c(0,plot_limit),
+		x=A[['sched','negexp','A_o']], # scheduled score
+		y=log( A[['retro','negexp','A_o']] / A[['sched','negexp','A_o']] ), # logged pct diff
+		main=paste(agency,'A_o'), pch='+', bty='n', yaxt="n", xaxt='n', xlab='', ylab='',
+		xlim=xlim, ylim=log(c(.7,1.3)),
 		col=rgb(0,0,0,alpha=0.4)
 	)
-	Ao_lm = lm( A[['retro','gauss','A_o']] ~ A[['sched','gauss','A_o']] )
-	abline(Ao_lm,col='blue') # regression line
-	abline(0,1,col='red') # identity line
-	labs = seq(0,1,by=.1)
-	axis( 2, at=labs, labels=labs, las=2, pos=-plot_limit/30 )
-	axis( 1, at=labs, labels=labs, las=0, pos=-plot_limit/30 )
-	abline(h=labs,v=labs,col=rgb(0,0,0,alpha=0.05))
-	title(ylab="Retro", line=2)
-	title(xlab="Schedule", line=2)
+	lab = seq(xlim[1],xlim[2],by=.1)
+	axis(1,at=lab,labels=lab,las=2,pos=log(0.69),las=0)
+	ps = c(.70,.8,.9,1,1.15,1.3)
+	axis( 2, at=log(ps), labels=sprintf('%+.1f%%',(ps-1)*100), las=2, pos=xlim[1]-diff(xlim)/30 )
+	abline(h=log(ps),v=lab,col=rgb(0,0,0,alpha=0.05))
+	abline(h=0,col=rgb(1,0,0,alpha=0.3))
+	title(ylab="Retro Access % Difference", line=4)
+	title(xlab="Schedule Access at Origin", line=2)
 dev.off()
 
 

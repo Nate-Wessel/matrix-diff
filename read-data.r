@@ -4,7 +4,7 @@
 # wt     - a walking time matrix
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
-
+agency = 'Muni'
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
 	schedule_dir    = '/home/nate/dissdata/jv-all-stops'
@@ -118,3 +118,6 @@ s_odt = s_odt[,,r_times]
 remove(schedule_dir,retro_dir,walk_times_file,od_table,con)
 remove(common_times,r_subset,r_times)
 remove(read_timecube, read_time_matrix)
+
+# save the data for this agency for quicker reading later
+save(agency,od,wt,s_odt,r_odt,file=paste0(agency,'.RData'))
