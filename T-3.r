@@ -1,12 +1,7 @@
-agency = 'Muni'
+agency = 'JTA'
 load(paste0('~/',agency,'.RData'))
 
 library('ks')
-library('latex2exp')
-
-s_odt[s_odt==0] = 1
-r_odt[r_odt==0] = 1
-
 
 figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 
@@ -56,3 +51,6 @@ pdf(paste0(figures_dir,agency,'-time3.pdf'),width=5.5,height=5.5)
 	# add agency name in lower left corner
 	text(x=0,y=-0.95,labels=agency,pos=4,cex=2)
 dev.off()
+# clean up
+remove(kde_result,contours,hd,hdiffs,hmax,ps,s,x)
+gc()
