@@ -1,68 +1,20 @@
-source('~/matrix-diff/read-data.r')
-source('~/matrix-diff/access-functions.r')
-source('~/matrix-diff/all-access.r')
+#source('~/matrix-diff/read-data.r')
+#source('~/matrix-diff/access-functions.r')
+#source('~/matrix-diff/all-access.r')
 
-agency = 'TTC'
-load(paste0(agency,'.RData'))
+agency = 'JTA'
+load(paste0('~/',agency,'.RData'))
 # loads: 
-#	agency	: 
-#	od			: 
-#	wt			: 
-#	s_odt		: 
-#	r_odt		: 
-#	A			: 
-
-save(agency,od,wt,s_odt,r_odt,A,file=paste0(agency,'.RData'))
+#	agency	: agency name
+#	od			: OD polygon table
+#	wt			: walking times
+#	s_odt		: schedule
+#	r_odt		: retro
+#	A			: access scores
 
 library('tidyverse')
 
 figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
-
-#
-# PLOT THE T_odt FIGURES
-#
-# sample 10k non-null value pairs
-s = sample(length(s_odt),10^5)
-s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
-s = s[1:10000]
-# get percentiles of scheduled travel time
-qs = quantile( s_odt, seq(0.005,0.995,by=0.01), na.rm=T )
-# get quantiles of percent differences at each percentile scheduled time
-diff_quants = tapply(
-	r_odt/s_odt,
-	as.factor( ntile( c(s_odt),100) ), # factor dividing scheduled travel times into percentiles
-	quantile, probs=c(.05,.25,.5,.75,.95), na.rm=T
-)
-# limit the plot range per agency
-xlim = switch(agency, 'Muni'=c(0,2), 'MBTA'=c(0,4), 'TTC'=c(0,3), 'JTA'=c(0,4) ) 
-# plot the schedule travel times against error (sampled points)
-pdf(paste0(figures_dir,agency,'-time2.pdf'),width=5.5,height=5.5)
-	# set up the empty plot
-	par( mai=c(0.8,0.8,0.4,0.2), pch='+', family='serif' ) # bottom, left, top, right
-	plot(0,type='n', main=paste(agency,'Scheduled Travel Times vs % Error'),
-		bty='n', xaxt="n", yaxt="n", xlab='', ylab='',
-		xlim=xlim, ylim=c(-1,1) )
-	# add the axes: hours scheduled  and percent difference
-	axis( 1, at=c(0:xlim[2]), labels=paste(0:xlim[2],'h'), las=0, pos=-1.1 )
-	ps = c(.5,.6,.70,.8,.9,1,1.15,1.3,1.5,1.75,2)
-	axis( 2, at=log(ps), labels=sprintf('%+.1f%%',(ps-1)*100), las=2, pos=-xlim[2]/30 )
-	#title(ylab="% diff from schedule", line=2)
-	title(xlab="Scheduled travel time", line=2.5)
-	abline(h=log(ps),v=0:xlim[2],col=rgb(0,0,0,alpha=0.05)) # grey grid
-	abline(h=0,col='red') # red median line
-	points(
-		x= s_odt[s] / 3600, # scheduled time in hours
-		y= log(r_odt[s]/s_odt[s]), # logged percent difference
-		col=rgb(0,0,0,alpha=0.1) )
-	# lines
-	lines( x=qs/3600, y=sapply(diff_quants,function(x){log(x[1])}), col='black' ) # 0.05
-	lines( x=qs/3600, y=sapply(diff_quants,function(x){log(x[2])}), col='blue' ) # 0.25
-	lines( x=qs/3600, y=sapply(diff_quants,function(x){log(x[3])}), col='red' ) # median
-	lines( x=qs/3600, y=sapply(diff_quants,function(x){log(x[4])}), col='blue' ) # 0.75
-	lines( x=qs/3600, y=sapply(diff_quants,function(x){log(x[5])}), col='black' ) # 0.95
-dev.off()
-# clean up after all that
-remove(ps,qs,s,xlim,diff_quants)
 
 
 # plot A_ot schedule vs retro (sampled)
