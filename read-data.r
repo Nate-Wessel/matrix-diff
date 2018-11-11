@@ -4,7 +4,7 @@
 # wt     - a walking time matrix
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
-agency = 'JTA'
+agency = 'MBTA'
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
 	schedule_dir    = '~/dissdata/jv-all-stops'
@@ -73,18 +73,25 @@ if( agency == 'JTA' ){
 	# already removed from db table
 	remove(bad_od)
 }else if( agency == 'Muni' ){
-	bad_od = c(5,127)
+	bad_od = c(5,127,110,246,207,133)
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
 	wt    <-    wt[-bad_od,-bad_od]
-	od <- od[!od$uid %in% bad_od,]
+	# already removed from db table
 	remove(bad_od)
 }else if( agency == 'TTC' ){
-	bad_od = c(38)
+	bad_od = c(38,295,147,174,8,94)
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
 	wt    <-    wt[-bad_od,-bad_od]
-	od <- od[!od$uid %in% bad_od,]
+	# already removed from db table
+	remove(bad_od)
+}else if( agency == 'MBTA' ){
+	bad_od = c(73,67,165,250,87,57)
+	s_odt <- s_odt[-bad_od,-bad_od,]
+	r_odt <- r_odt[-bad_od,-bad_od,]
+	wt    <-    wt[-bad_od,-bad_od]
+	# already removed from db table
 	remove(bad_od)
 }
 
