@@ -124,22 +124,6 @@ rta = ma( apply(sub_Ar_ot,2,mean), 20 )
 plot(x=1:length(rta),y=rta/sta,type='l')
 
 
-# plot the access functions
-pdf(paste0(figures_dir,'A-funcs.pdf'),width=5,height=3)
-	par(mar=c(4,2,3,1),family='serif')
-	plot( 
-		0, type='n', ylim=c(0,1), xlim=c(0,120), bty='n', xaxt="n", yaxt="n",
-		main='Accessibility Functions',xlab=NA, ylab=NA
-	)
-	x = 0:(120*60)
-	lines(x=x/60,y=cum(x),col='darkgreen')
-	lines(x=x/60,y=negexp(x),col='blue')
-	axis( 2, at=c(0,1), labels=c(0,1), las=2, pos=-5 ) # left
-	axis( 1, at=c(0,30,60,90,120), labels=c('0','30 minutes','1 hour','1.5 hours','2 hours'), las=0, pos=-.1 ) # bottom
-	text(x=c(60,15),y=c(.6,.3),labels=c('Cumulative','Negative\nExponential'),col=c('darkgreen','blue'))
-dev.off()
-
-
 # subtract the temporal mean from the schedule times
 #s_odt_noise = trunc( s_odt - c( apply( s_odt, c(1,2), mean, na.rm=T ) ) )
 #r_odt_noise = trunc( r_odt - c( apply( r_odt, c(1,2), mean, na.rm=T ) ) )
