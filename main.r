@@ -1,7 +1,3 @@
-#source('~/matrix-diff/read-data.r')
-#source('~/matrix-diff/access-functions.r')
-#source('~/matrix-diff/all-access.r')
-
 agency = 'JTA'
 load(paste0('~/',agency,'.RData'))
 # loads: 

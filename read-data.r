@@ -4,27 +4,27 @@
 # wt     - a walking time matrix
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
-agency = 'Muni'
+agency = 'JTA'
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
-	schedule_dir    = '/home/nate/dissdata/jv-all-stops'
-	retro_dir       = '/home/nate/dissdata/jv-retro'
-	walk_times_file = '/home/nate/Dropbox/diss/analysis/walk-times/jta.csv'
+	schedule_dir    = '~/dissdata/jv-all-stops'
+	retro_dir       = '~/dissdata/jv-retro'
+	walk_times_file = '~/Dropbox/diss/analysis/walk-times/jta.csv'
 }else if( agency == 'TTC' ){
 	od_table        = 'ttc_od'
-	schedule_dir    = '/home/nate/dissdata/ttc-sched'
-	retro_dir       = '/home/nate/dissdata/ttc-retro'
-	walk_times_file = '/home/nate/Dropbox/diss/analysis/walk-times/ttc.csv'
+	schedule_dir    = '~/dissdata/ttc-sched'
+	retro_dir       = '~/dissdata/ttc-retro'
+	walk_times_file = '~/Dropbox/diss/analysis/walk-times/ttc.csv'
 }else if( agency == 'MBTA' ){
 	od_table        = 'mbta_od'
-	schedule_dir    = '/home/nate/dissdata/mbta-sched'
-	retro_dir       = '/home/nate/dissdata/mbta-retro'
-	walk_times_file = '/home/nate/Dropbox/diss/analysis/walk-times/mbta.csv'
+	schedule_dir    = '~/dissdata/mbta-sched'
+	retro_dir       = '~/dissdata/mbta-retro'
+	walk_times_file = '~/Dropbox/diss/analysis/walk-times/mbta.csv'
 }else if( agency == 'Muni' ){
 	od_table        = 'muni_od'
-	schedule_dir    = '/home/nate/dissdata/muni-sched'
-	retro_dir       = '/home/nate/dissdata/muni-retro'
-	walk_times_file = '/home/nate/Dropbox/diss/analysis/walk-times/muni.csv'
+	schedule_dir    = '~/dissdata/muni-sched'
+	retro_dir       = '~/dissdata/muni-retro'
+	walk_times_file = '~/Dropbox/diss/analysis/walk-times/muni.csv'
 }
 
 # read one of the matrix files output by the OTP script
@@ -66,7 +66,7 @@ r_odt <- read_timecube(retro_dir)
 
 # remove any problem OD's
 if( agency == 'JTA' ){
-	bad_od = c(19,210)
+	bad_od = c(19,210,64,295,87,246,294,141,152,172,150,214,102,236,111)
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
 	wt    <-    wt[-bad_od,-bad_od]
@@ -95,6 +95,9 @@ i = !is.na(c(wt)) & c(r_odt) > c(wt) | is.na(r_odt)
 r_odt[ i ] = c(wt)[i]
 remove(i)
 
+# set any times == 0 to 1
+s_odt[s_odt==0] = 1L
+r_odt[r_odt==0] = 1L
 	
 # ------------- Subset matrices to shared time ----------------
 
@@ -119,5 +122,9 @@ remove(schedule_dir,retro_dir,walk_times_file,od_table,con)
 remove(common_times,r_subset,r_times)
 remove(read_timecube, read_time_matrix)
 
+# now do the accessibility calculations before storing everything for later
+source('~/matrix-diff/access-functions.r')
+source('~/matrix-diff/all-access.r')
+
 # save the data for this agency for quicker reading later
-save(agency,od,wt,s_odt,r_odt,file=paste0(agency,'.RData'))
+save(agency,A,od,wt,s_odt,r_odt,file=paste0('~/',agency,'.RData'),safe=T)
