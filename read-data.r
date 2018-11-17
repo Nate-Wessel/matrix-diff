@@ -4,7 +4,7 @@
 # wt     - a walking time matrix
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
-agency = 'MBTA'
+agency = 'Muni'
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
 	schedule_dir    = '~/dissdata/jv-all-stops'
@@ -128,6 +128,7 @@ s_odt = s_odt[,,r_times]
 remove(schedule_dir,retro_dir,walk_times_file,od_table,con)
 remove(common_times,r_subset,r_times)
 remove(read_timecube, read_time_matrix)
+gc()
 
 # now do the accessibility calculations before storing everything for later
 source('~/matrix-diff/access-functions.r')

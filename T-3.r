@@ -1,4 +1,4 @@
-agency = 'JTA'
+agency = 'MBTA'
 load(paste0('~/',agency,'.RData'))
 
 library('ks')
@@ -12,16 +12,16 @@ figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 hmax = switch( agency, 'Muni'=1.3, 'MBTA'=4, 'TTC'=2.8, 'JTA'=4 ) 
 l2 = function(x){log(x,2)} # log base 2
 # sample 10k non-null value pairs
-s = sample(length(s_odt),200000)
-s = s[ !is.na(s_odt[s]) & !is.na(r_odt[s]) ]
-s = s[1:100000]
+s = sample(length(s_odt),1000000)
+s = s[ !is.na(s_odt[s]+r_odt[s]) ]
 # do the KDE
 kde_result = kde( 
 	cbind(
 		x=s_odt[s]/3600,
 		y=l2(r_odt[s]/s_odt[s])
 	),
-	xmin=c(-0.1,-1.1),xmax=c(hmax+.1,1.1)
+	xmin=c(-0.1,-1.1),xmax=c(hmax+.1,1.1),
+	gridsize=c(300,300)
 )
 # define contours
 contours = c(10,25,50,75,90)
