@@ -50,13 +50,6 @@ read_timecube <- function(directory){
 	return( m )
 }
 
-# database connection
-library('RPostgreSQL')
-library('postGIStools')
-con <- dbConnect( PostgreSQL(), dbname='diss', user='nate', host='localhost', password='mink')
-od <- get_postgis_query(con,paste('SELECT * FROM',od_table,'ORDER BY uid'),geom_name='voronoi_geom')
-dbDisconnect(con)
-
 # get the walking time matrix as double, convert to integer
 wt = read_time_matrix(walk_times_file)
 wt = array(as.integer(wt),dim(wt))
@@ -70,30 +63,23 @@ if( agency == 'JTA' ){
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
 	wt    <-    wt[-bad_od,-bad_od]
-	# already removed from db table
-	remove(bad_od)
 }else if( agency == 'Muni' ){
 	bad_od = c(5,127,110,246,207,133)
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
 	wt    <-    wt[-bad_od,-bad_od]
-	# already removed from db table
-	remove(bad_od)
 }else if( agency == 'TTC' ){
 	bad_od = c(38,295,147,174,8,94)
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
 	wt    <-    wt[-bad_od,-bad_od]
-	# already removed from db table
-	remove(bad_od)
 }else if( agency == 'MBTA' ){
 	bad_od = c(73,67,165,250,87,57)
 	s_odt <- s_odt[-bad_od,-bad_od,]
 	r_odt <- r_odt[-bad_od,-bad_od,]
 	wt    <-    wt[-bad_od,-bad_od]
-	# already removed from db table
-	remove(bad_od)
 }
+remove(bad_od)
 
 # clip travel times to walking times
 i = !is.na(c(wt)) & c(s_odt) > c(wt) | is.na(s_odt)
@@ -135,4 +121,6 @@ source('~/matrix-diff/access-functions.r')
 source('~/matrix-diff/all-access.r')
 
 # save the data for this agency for quicker reading later
-save(agency,A,od,wt,s_odt,r_odt,file=paste0('~/',agency,'.RData'),safe=T)
+save(agency,s_odt,r_odt,file=paste0('~/dissdata/R/',agency,'_times','.RData'),safe=T)
+save(agency,A,file=paste0('~/dissdata/R/',agency,'_A.RData'),safe=T)
+
