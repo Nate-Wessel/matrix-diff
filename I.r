@@ -44,7 +44,16 @@ for( agency in c('TTC','JTA','MBTA','Muni')){
 dbDisconnect(con)
 
 library('beeanplot')
-beanplot(x,horizontal=T,method='stack',side='second',cut=1,bw=0.02,col=c(adjustcolor('red',alpha=.2)))
+par(mar=c(2,1,1,1),bty='n',yaxt='n',family='serif') # bottom, left, top, right
+beanplot(
+	x,
+	horizontal=T,
+	method='stack',
+	side='second',
+	cut=1, bw=0.02,
+	col=c( adjustcolor('red',alpha=.2) ),
+	border=NA
+)
 
 
 # set up the plot
