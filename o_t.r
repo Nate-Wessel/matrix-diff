@@ -2,22 +2,14 @@ figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 
 # selected origins identified by letters
 origins = list(
-	list( name='A', agency = 'TTC', o = '78', func = 'cum', param='45', 
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
-	list( name='B', agency = 'TTC', o = '240', func = 'cum', param='45', # same service, temporal misalignment
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
-	list( name='C', agency = 'Muni', o = '11', func = 'cum', param='30', # high access
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
-	list( name='D', agency = 'JTA', o = '54', func = 'cum', param='45', # 200% error 
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
-	list( name='E', agency = 'MBTA', o = '147', func = 'cum', param='45', # 
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
-	list( name='F', agency = 'MBTA', o = '1', func = 'cum', param='45', # 
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
-	list( name='G', agency = 'MBTA', o = '234', func = 'cum', param='45', # 
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
-	list( name='H', agency = 'Muni', o = '29', func = 'cum', param='30', # 
-		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" )
+	list( name='A', agency = 'TTC', o = '78', func = 'cum', param='45'),
+	list( name='B', agency = 'TTC', o = '240', func = 'cum', param='45'), # same service, temporal misalignment
+	list( name='C', agency = 'Muni', o = '11', func = 'cum', param='30'), # high access
+	list( name='D', agency = 'JTA', o = '54', func = 'cum', param='45'), # 200% error 
+	list( name='E', agency = 'MBTA', o = '147', func = 'cum', param='45'), # 
+	list( name='F', agency = 'MBTA', o = '1', func = 'cum', param='45'), # 
+	list( name='G', agency = 'MBTA', o = '234', func = 'cum', param='45'), # 
+	list( name='H', agency = 'Muni', o = '29', func = 'cum', param='30') # 
 )
 
 # make a plot for each selected origin locations
@@ -28,7 +20,7 @@ for(O in origins){
 	# subset A_ot to a one rush hour for schedule and retro
 	Ar_ot = A[['retro',O$func,O$param,'A_ot']]
 	As_ot = A[['sched',O$func,O$param,'A_ot']]
-	ti = dimnames(Ar_ot)[[2]] >= O$start & dimnames(Ar_ot)[[2]] <= O$end
+	ti = dimnames(Ar_ot)[[2]] >= "2017-11-10 16:00:00" & dimnames(Ar_ot)[[2]] <= "2017-11-10 19:00:00"
 	Ar_ot = Ar_ot[O$o,ti]
 	As_ot = As_ot[O$o,ti]
 	# range in accessibility rounded to percentages
