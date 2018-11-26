@@ -21,7 +21,7 @@ for(func_name in dimnames(A)[[2]] ){
 			# calculate momentary accessibility A_ot
 			A_ot = apply( 
 				acc_func( switch(dataset,'retro'=r_odt,'sched'=s_odt), param ), 
-				c(2,3), sum, na.rm=T 
+				c(1,3), sum, na.rm=T 
 			) / dim(s_odt)[1]
 			A[[dataset,func_name,p,'A_ot']] = A_ot
 			# hour binned A_o scores
