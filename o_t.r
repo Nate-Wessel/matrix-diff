@@ -13,9 +13,11 @@ origins = list(
 	list( name='E', agency = 'MBTA', o = '147', func = 'cum', param='45', # 
 		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
 	list( name='F', agency = 'MBTA', o = '1', func = 'cum', param='45', # 
-			start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
+		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
 	list( name='G', agency = 'MBTA', o = '234', func = 'cum', param='45', # 
-			start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" )
+		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" ),
+	list( name='H', agency = 'Muni', o = '29', func = 'cum', param='30', # 
+		start = "2017-11-10 16:00:00", end = "2017-11-10 19:00:00" )
 )
 
 # make a plot for each selected origin locations
@@ -35,13 +37,13 @@ for(O in origins){
 	A_range[2] = ceiling(A_range[2]*100)/100
 	# plot the change over time
 	pdf(paste0(figures_dir,'o_',O$name,'.pdf'),width=6,height=1.5)
-		par(mar=c(2,0,.1,2.5),family='serif',bty='n') # bottom, left, top, right,
-		plot( x=1:length(Ar_ot), y=Ar_ot, 
-			type='l',col='red', xaxt="n",yaxt='n',
-			ylim=A_range,xlim=c(-3,180)
+		par(mar=c(1.5,0,.1,2.5),family='serif',bty='n') # bottom, left, top, right,
+		plot( x=1:length(As_ot), y=As_ot, 
+			type='l',col='blue', xaxt="n",yaxt='n',
+			ylim=A_range, xlim=c(-3,180)
 		)
 		text(x=-5,y=A_range[2],labels=O$name,cex=2,col='red',pos=1)
-		lines( x=1:length(As_ot), y=As_ot, type='l',col='blue')
+		lines( x=1:length(Ar_ot), y=Ar_ot, type='l',col='red')
 		# hours on the X axis
 		axis( 1, at=c(0,60,120,180), labels=c('4pm','5pm','6pm','7pm'), las=0, tick=F, line=-1)
 		# access on the y axis
