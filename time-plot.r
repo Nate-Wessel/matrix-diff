@@ -1,5 +1,5 @@
-agency = 'MBTA'
-load(paste0('~/',agency,'.RData'))
+agency = 'TTC'
+load(paste0('~/dissdata/R/',agency,'_times.RData'))
 
 library('ks')
 
