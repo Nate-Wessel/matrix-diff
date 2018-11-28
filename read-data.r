@@ -4,7 +4,7 @@
 # wt     - a walking time matrix
 # s_odt  - scheduled travel times indexed by o,d,t
 # r_odt  - retro travel times indexed by o,d,t
-agency = 'Muni'
+agency = 'TTC'
 if( agency == 'JTA' ){
 	od_table        = 'jv_od'
 	schedule_dir    = '~/dissdata/jv-all-stops'
@@ -121,6 +121,6 @@ source('~/matrix-diff/access-functions.r')
 source('~/matrix-diff/all-access.r')
 
 # save the data for this agency for quicker reading later
-save(agency,s_odt,r_odt,file=paste0('~/dissdata/R/',agency,'_times','.RData'),safe=T)
-save(agency,A,file=paste0('~/dissdata/R/',agency,'_A.RData'),safe=T)
+save(agency,s_odt,r_odt,file=paste0('~/dissdata/R/',agency,'_times','.RData'))
+save(agency,A,file=paste0('~/dissdata/R/',agency,'_A.RData'))
 
