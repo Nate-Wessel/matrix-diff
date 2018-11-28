@@ -2,14 +2,14 @@ figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
 
 # selected origins identified by letters
 origins = list(
-	list( name='A', agency = 'TTC', o = '78', func = 'cum', param='45'),
-	list( name='B', agency = 'TTC', o = '240', func = 'cum', param='45'), # same service, temporal misalignment
-	list( name='C', agency = 'Muni', o = '11', func = 'cum', param='30'), # high access
-	list( name='D', agency = 'JTA', o = '54', func = 'cum', param='45'), # 200% error 
-	list( name='E', agency = 'MBTA', o = '147', func = 'cum', param='45'), # 
-	list( name='F', agency = 'MBTA', o = '1', func = 'cum', param='45'), # 
-	list( name='G', agency = 'MBTA', o = '234', func = 'cum', param='45'), # 
-	list( name='H', agency = 'Muni', o = '29', func = 'cum', param='30') # 
+	list( name='A', agency = 'TTC', o = '240', func = 'cum', param='45'), # same service, temporal misalignment
+	list( name='B', agency = 'TTC', o = '287', func = 'cum', param='45'), # high access
+	list( name='C', agency = 'JTA', o = '129', func = 'cum', param='45'), # positive error
+	list( name='D', agency = 'JTA', o = '230', func = 'cum', param='45'), # high access
+	list( name='E', agency = 'MBTA', o = '206', func = 'cum', param='45'), # mid range negative error
+	list( name='F', agency = 'MBTA', o = '6', func = 'cum', param='45'), # high access
+	list( name='G', agency = 'Muni', o = '81', func = 'cum', param='30'), # 
+	list( name='H', agency = 'Muni', o = '93', func = 'cum', param='30') # 
 )
 
 # make a plot for each selected origin locations
@@ -34,7 +34,7 @@ for(O in origins){
 			type='l',col='blue', xaxt="n",yaxt='n',
 			ylim=A_range, xlim=c(-3,180)
 		)
-		text(x=-5,y=A_range[2],labels=O$name,cex=2,col='red',pos=1)
+		text(x=-5,y=A_range[2],labels=O$name,cex=2,pos=1)
 		lines( x=1:length(Ar_ot), y=Ar_ot, type='l',col='red')
 		# hours on the X axis
 		axis( 1, at=c(0,60,120,180), labels=c('4pm','5pm','6pm','7pm'), las=0, tick=F, line=-1)
