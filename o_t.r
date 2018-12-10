@@ -8,8 +8,8 @@ origins = list(
 	list( name='D', agency = 'JTA', o = '230', func = 'cum', param='45'), # high access
 	list( name='E', agency = 'MBTA', o = '206', func = 'cum', param='45'), # mid range negative error
 	list( name='F', agency = 'MBTA', o = '6', func = 'cum', param='45'), # high access
-	list( name='G', agency = 'Muni', o = '81', func = 'cum', param='30'), # 
-	list( name='H', agency = 'Muni', o = '93', func = 'cum', param='30') # 
+	list( name='G', agency = 'Muni', o = '41', func = 'cum', param='30'), # 
+	list( name='H', agency = 'Muni', o = '190', func = 'cum', param='30') # 
 )
 
 # make a plot for each selected origin locations
@@ -23,6 +23,7 @@ for(O in origins){
 	ti = dimnames(Ar_ot)[[2]] >= "2017-11-10 16:00:00" & dimnames(Ar_ot)[[2]] <= "2017-11-10 19:00:00"
 	Ar_ot = Ar_ot[O$o,ti]
 	As_ot = As_ot[O$o,ti]
+#	if(O$name=='D'){4*'u'}
 	# range in accessibility rounded to percentages
 	A_range = range(c(As_ot,Ar_ot))
 	A_range[1] = floor(A_range[1]*100)/100
