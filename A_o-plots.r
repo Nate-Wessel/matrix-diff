@@ -1,11 +1,11 @@
 library('ks')
-figures_dir = '/home/nate/Dropbox/diss/paper/figures/'
+figures_dir = '/home/nate/Dropbox/diss/access/paper/figures/'
 # log base 2
 l2 = function(x){log(x,2)}
 # database connection
 library('RPostgreSQL')
 library('postGIStools')
-con <- dbConnect( PostgreSQL(), dbname='diss', user='nate', host='localhost', password='mink')
+con <- dbConnect( PostgreSQL(), dbname='diss_access', user='nate', host='localhost', password='mink')
 # moran
 library('spdep') # moran
 library('dplyr') # ntile
@@ -14,7 +14,7 @@ library('dplyr') # ntile
 for( agency in c('TTC','JTA','MBTA','Muni')){
 	print(agency)
 	# get the data
-	load(paste0('~/dissdata/R/',agency,'_A.RData'))
+	load(paste0('~/dissdata/access/R/',agency,'_A.RData'))
 	for(type in c('negexp','cum')){
 		param = switch( type,
 			'cum'=switch(agency,'Muni'='30','45'),
@@ -42,7 +42,7 @@ for( agency in c('TTC','JTA','MBTA','Muni')){
 			abline(h=median(y),v=median(x),col='grey',lty=2) # metamedians
 			# add log-scale axis
 			marks = quantile(y,c(0,.1,.5,.9,1))
-			axis( 2, at=marks, labels=sprintf('%+.0f%%',(exp(marks)-1)*100), las=2, 
+			axis( 2, at=marks, labels=sprintf('%+.0f%%',(2^marks-1)*100), las=2, 
 				pos=min(x)-diff(range(x))/30 )
 			# x axis
 			marks = quantile(x,c(0,.1,.5,.9,1))
@@ -69,9 +69,12 @@ dbDisconnect(con)
 #remove(type,param,e_oh,y,x,colors,O)
 gc()
 
-#agency='JTA'
-#load(paste0('~/dissdata/R/',agency,'_A.RData'))
+#agency='TTC'
+#load(paste0('~/dissdata/access/R/',agency,'_A.RData'))
 #type='negexp'
+#param = switch( type,
+#	'cum'=switch(agency,'Muni'='30','45'),
+#	'negexp'=switch(agency,'Muni'='20','30') )
 #e_oh = A[['retro',type,param,'A_oh']] / A[['sched',type,param,'A_oh']]
 #y <- apply( e_oh, 1, median )
-#write.csv(x=(y-1)*100,'/home/nate/temp.csv')
+#write.csv(x=(y-1)*100,'/home/nate/ttc-negexp.csv')
